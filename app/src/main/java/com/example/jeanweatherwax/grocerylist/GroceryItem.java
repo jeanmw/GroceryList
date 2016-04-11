@@ -14,11 +14,13 @@ public class GroceryItem implements Parcelable {
   private String name;
   private String description;
   private Integer quantity;
+  private Boolean checked;
 
-  public GroceryItem(String name, String description, Integer quantity) {
+  public GroceryItem(String name, String description, Integer quantity, Boolean isChecked) {
     this.name = name;
     this.description = description;
     this.quantity = quantity;
+    this.checked = checked;
   }
 
   public String getName() {
@@ -33,12 +35,20 @@ public class GroceryItem implements Parcelable {
     return quantity;
   }
 
+  public Boolean getChecked() {
+    return checked;
+  }
+
   public void setDescription(String description) {
     this.description = description;
   }
 
   public void setQuantity(Integer quantity) {
     this.quantity = quantity;
+  }
+
+  public void setChecked(Boolean isChecked) {
+    this.checked = checked;
   }
 
   @Override
@@ -51,12 +61,14 @@ public class GroceryItem implements Parcelable {
     dest.writeString(this.name);
     dest.writeString(this.description);
     dest.writeValue(this.quantity);
+    dest.writeValue(this.checked);
   }
 
   protected GroceryItem(Parcel in) {
     this.name = in.readString();
     this.description = in.readString();
     this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.checked = (Boolean) in.readValue(Boolean.class.getClassLoader());
   }
 
   public static final Creator<GroceryItem> CREATOR = new Creator<GroceryItem>() {

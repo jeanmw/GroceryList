@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,23 +27,26 @@ public class GroceryListActivity extends AppCompatActivity {
   private Button editListButton;
 
   private ArrayList<GroceryItem> groceries;
-  private SimpleBaseAdapter itemAdapter;
+  private SimpleBaseAdapterWithCheckbox itemAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_grocery_list);
 
+
     inflateViews();
 
     groceries = GroceryListPrefs.getGroceryList(GroceryListActivity.this);
 
     //Adapter for Grocery List
-    itemAdapter = new SimpleBaseAdapter(GroceryListActivity.this, groceries);
+    itemAdapter = new SimpleBaseAdapterWithCheckbox(GroceryListActivity.this, groceries);
     groceryListView.setAdapter(itemAdapter);
 
     //add a new item and enter information
     setupAddItemButton();
+
+    Toast.makeText(GroceryListActivity.this, "Add item, check off existing item, or click existing item for more info", Toast.LENGTH_SHORT).show();
 
     //show more information on item click
     groceryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,15 +85,17 @@ public class GroceryListActivity extends AppCompatActivity {
         final EditText descriptionEditText = (EditText) addItemView.findViewById(R.id.description);
         final EditText quantityEditText = (EditText) addItemView.findViewById(R.id.quantity);
         builder.setView(addItemView);
-
+        checkEmpty(nameEditText);
+        checkEmpty(descriptionEditText);
+        checkEmpty(quantityEditText);
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialogInterface, int i) {
-            Toast.makeText(GroceryListActivity.this, nameEditText.getText() + " saved", Toast.LENGTH_SHORT).show();
             String item = nameEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
             Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
-            GroceryItem groceryItem = new GroceryItem(item, description, quantity);
+            GroceryItem groceryItem = new GroceryItem(item, description, quantity, false);
+            Toast.makeText(GroceryListActivity.this, nameEditText.getText() + " saved", Toast.LENGTH_SHORT).show();
             groceries.add(groceryItem);
             GroceryListPrefs.saveGroceryList(GroceryListActivity.this, groceries);
             itemAdapter.notifyDataSetChanged();
@@ -121,6 +127,14 @@ public class GroceryListActivity extends AppCompatActivity {
     groceries = GroceryListPrefs.getGroceryList(GroceryListActivity.this);
     itemAdapter.setItems(groceries);
     itemAdapter.notifyDataSetChanged();
+  }
+
+  public void checkEmpty(EditText editText) {
+    String s = editText.getText().toString();
+    if(TextUtils.isEmpty(s)) {
+      editText.setError("Item cannot be empty");
+      return;
+    }
   }
 
 }

@@ -72,11 +72,10 @@ public class EditGroceryActivity extends AppCompatActivity {
     builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialogInterface, int i) {
-        Toast.makeText(EditGroceryActivity.this, itemNameEditText.getText(), Toast.LENGTH_SHORT).show();
         String item = itemNameEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
         Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
-        GroceryItem groceryItem = new GroceryItem(item, description, quantity);
+        GroceryItem groceryItem = new GroceryItem(item, description, quantity, false);
         groceries.add(groceryItem);
         GroceryListPrefs.saveGroceryList(EditGroceryActivity.this, groceries);
         itemAdapter.notifyDataSetChanged();
