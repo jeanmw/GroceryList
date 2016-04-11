@@ -7,22 +7,22 @@ package com.example.jeanweatherwax.grocerylist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/** This class is used to make a custom grocery item object */
+/** This class is used to make a custom grocery name object */
 
 public class GroceryItem implements Parcelable {
 
-  private String item;
+  private String name;
   private String description;
   private Integer quantity;
 
-  public GroceryItem(String item, String description, Integer quantity) {
-    this.item = item;
+  public GroceryItem(String name, String description, Integer quantity) {
+    this.name = name;
     this.description = description;
     this.quantity = quantity;
   }
 
-  public String getItem() {
-    return item;
+  public String getName() {
+    return name;
   }
 
   public String getDescription() {
@@ -41,9 +41,6 @@ public class GroceryItem implements Parcelable {
     this.quantity = quantity;
   }
 
-
-
-
   @Override
   public int describeContents() {
     return 0;
@@ -51,13 +48,13 @@ public class GroceryItem implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
-    dest.writeString(this.item);
+    dest.writeString(this.name);
     dest.writeString(this.description);
     dest.writeValue(this.quantity);
   }
 
   protected GroceryItem(Parcel in) {
-    this.item = in.readString();
+    this.name = in.readString();
     this.description = in.readString();
     this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
   }

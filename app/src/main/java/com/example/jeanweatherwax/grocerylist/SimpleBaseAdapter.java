@@ -28,6 +28,10 @@ public class SimpleBaseAdapter extends BaseAdapter {
     this.groceries = groceries;
   }
 
+  public void setItems(ArrayList<GroceryItem> items) {
+    groceries = items;
+  }
+
   public int getCount() {
     return groceries.size();
   }
@@ -51,7 +55,7 @@ public class SimpleBaseAdapter extends BaseAdapter {
     } else {
       holder = (ViewHolder) convertView.getTag();
     }
-    holder.itemName.setText(groceries.get(position).getItem());
+    holder.itemName.setText(groceries.get(position).getName());
     holder.quantity.setText("quantity: " + groceries.get(position).getQuantity().toString());
     return convertView;
   }

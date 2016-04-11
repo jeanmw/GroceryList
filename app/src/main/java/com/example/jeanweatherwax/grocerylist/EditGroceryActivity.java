@@ -1,19 +1,15 @@
 package com.example.jeanweatherwax.grocerylist;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,115 +19,123 @@ import java.util.ArrayList;
  */
 public class EditGroceryActivity extends AppCompatActivity {
 
-  private ArrayAdapter<String> mAdapter;
-  private ListView mGroceryList;
-  private ImageButton mAddItem;
-  final Context context = this;
-  public final String itemHint = "item";
-  public final String descriptionHint = "description";
-  public final String amountHint = "quantity";
+  private static final String TAG = GroceryListActivity.class.getSimpleName();
+  public static final String KEY_PARCELABLE_GROCERIES = "key_parcelable_groceries";
+
+  private ArrayList<GroceryItem> groceries;
+  private SimpleBaseAdapter itemAdapter;
+
+  /**
+   * Views
+   */
+  private ListView groceryListView;
+  private ImageButton addItemButton;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_edit_grocery);
-
-    mGroceryList = (ListView) findViewById(R.id.groceries_listview);
-    mAddItem = (ImageButton) findViewById(R.id.add_button);
-
-    final ArrayList<GroceryItem> groceries = this.getIntent().getExtras().getParcelableArrayList("groceries");
-
-    final SimpleBaseAdapter mItemAdapter = new SimpleBaseAdapter(this, groceries);
-    mGroceryList.setAdapter(mItemAdapter);
-
-    //add a new item and enter information
-    mAddItem.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Add Grocery");
-        final EditText itemField = new EditText(context);
-        itemField.setHint(itemHint);
-        final EditText descriptionField = new EditText(context);
-        descriptionField.setHint(descriptionHint);
-        final EditText amountField = new EditText(context);
-        amountField.setInputType(InputType.TYPE_CLASS_NUMBER);
-        amountField.setHint(amountHint);
-        LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(itemField);
-        layout.addView(descriptionField);
-        layout.addView(amountField);
-        builder.setView(layout);
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialogInterface, int i) {
-            Toast.makeText(context, itemField.getText(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(context, descriptionField.getText(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(context, amountField.getText(), Toast.LENGTH_SHORT).show();
-            String item = itemField.getText().toString();
-            String description = descriptionField.getText().toString();
-            Integer quantity = Integer.valueOf(amountField.getText().toString());
-            GroceryItem groceryItem = new GroceryItem(item, description, quantity);
-            groceries.add(groceryItem);
-            mItemAdapter.notifyDataSetChanged();
-          }
-        });
-        builder.setNegativeButton("Cancel", null);
-        builder.create().show();
-      }
-    });
-
-    mGroceryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> adapterView, View v, final int position, long l) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        final GroceryItem groceryItem = mItemAdapter.getItem(position);
-        builder.setTitle("Edit " + groceryItem.getItem());
-        final TextView descriptionLabel = new TextView(context);
-        descriptionLabel.setText("Description: ");
-        final TextView quantityLabel = new TextView(context);
-        quantityLabel.setText("Quantity: ");
-        final EditText descriptionField = new EditText(context);
-        descriptionField.setHint(groceryItem.getDescription());
-        final EditText amountField = new EditText(context);
-        amountField.setInputType(InputType.TYPE_CLASS_NUMBER);
-        amountField.setHint(groceryItem.getQuantity().toString());
-        LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(descriptionLabel);
-        layout.addView(descriptionField);
-        layout.addView(quantityLabel);
-        layout.addView(amountField);
-        builder.setView(layout);
-        builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            try {
-              groceries.remove(position);
-              mItemAdapter.notifyDataSetChanged();
-            } catch (NullPointerException e) {
-              System.out.print("Null Pointer Exception! empty list");
-            }
-          }
-        });
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialogInterface, int i) {
-            Toast.makeText(context, groceryItem.getItem() + " saved", Toast.LENGTH_SHORT).show();
-            String description = descriptionField.getText().toString();
-            Integer quantity = Integer.valueOf(amountField.getText().toString());
-            groceryItem.setDescription(description);
-            groceryItem.setQuantity(quantity);
-            mItemAdapter.notifyDataSetChanged();
-          }
-        });
-        builder.create().show();
-      }
-
-    });
-
+    inflateViews();
+    initializeAdapter();
+    setupAddItemButton();
+    setupGroceryListView();
   }
 
+  private void inflateViews() {
+    groceryListView = (ListView) findViewById(R.id.groceries_listview);
+    addItemButton = (ImageButton) findViewById(R.id.add_button);
+  }
 
+  private void initializeAdapter() {
+    groceries = this.getIntent().getExtras().getParcelableArrayList(KEY_PARCELABLE_GROCERIES);
+    itemAdapter = new SimpleBaseAdapter(this, groceries);
+    groceryListView.setAdapter(itemAdapter);
+  }
+
+  private void setupAddItemButton() {
+    addItemButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        createAddItemDialog();
+      }
+    });
+  }
+
+  private void createAddItemDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(EditGroceryActivity.this);
+    builder.setTitle("Add Grocery");
+    final View addItemView = LayoutInflater.from(EditGroceryActivity.this).inflate(R.layout.dialog_add_item, null, false);
+    builder.setView(addItemView);
+    final EditText itemNameEditText = (EditText) addItemView.findViewById(R.id.name);
+    final EditText descriptionEditText = (EditText) addItemView.findViewById(R.id.description);
+    final EditText quantityEditText = (EditText) addItemView.findViewById(R.id.quantity);
+    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialogInterface, int i) {
+        Toast.makeText(EditGroceryActivity.this, itemNameEditText.getText(), Toast.LENGTH_SHORT).show();
+        String item = itemNameEditText.getText().toString();
+        String description = descriptionEditText.getText().toString();
+        Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
+        GroceryItem groceryItem = new GroceryItem(item, description, quantity);
+        groceries.add(groceryItem);
+        GroceryListPrefs.saveGroceryList(EditGroceryActivity.this, groceries);
+        itemAdapter.notifyDataSetChanged();
+      }
+    });
+    builder.setNegativeButton("Cancel", null);
+    builder.create().show();
+  }
+
+  private void setupGroceryListView() {
+    groceryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> adapterView, View v, final int position, long l) {
+        createUpdateItemDialog(position);
+      }
+    });
+  }
+
+  private void createUpdateItemDialog(final int position) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(EditGroceryActivity.this);
+
+    final GroceryItem groceryItem = itemAdapter.getItem(position);
+    builder.setTitle("Edit " + groceryItem.getName());
+
+    View updateItemView = LayoutInflater.from(EditGroceryActivity.this)
+            .inflate(R.layout.dialog_update_item, null, false);
+
+    final EditText descriptionEditText = (EditText) updateItemView.findViewById(R.id.description_input);
+    descriptionEditText.setText(groceryItem.getDescription());
+
+    final EditText amountEditText = (EditText) updateItemView.findViewById(R.id.quantity_input);
+    amountEditText.setText(groceryItem.getQuantity().toString());
+
+    builder.setView(updateItemView);
+
+    builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int which) {
+        groceries.remove(position);
+        GroceryListPrefs.saveGroceryList(EditGroceryActivity.this, groceries);
+        itemAdapter.notifyDataSetChanged();
+      }
+    });
+
+    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialogInterface, int i) {
+        Toast.makeText(EditGroceryActivity.this, groceryItem.getName() + " saved", Toast.LENGTH_SHORT).show();
+        String description = descriptionEditText.getText().toString();
+        Integer quantity = Integer.valueOf(amountEditText.getText().toString());
+        groceryItem.setDescription(description);
+        groceryItem.setQuantity(quantity);
+        groceries.remove(groceryItem);
+        groceries.add(groceryItem);
+        GroceryListPrefs.saveGroceryList(EditGroceryActivity.this, groceries);
+        itemAdapter.notifyDataSetChanged();
+      }
+    });
+
+    builder.create().show();
+  }
 
 }

@@ -1,6 +1,10 @@
 <resources>
+    <!-- Static app content goes here -->
     <string name="app_name">GroceryList</string>
     <string name="add_item">Add</string>
-    <string name="item_editText_hint">Write a new item</string>
-    <string name="action_add_task">Add Task</string>
+
+    <!-- EditGroceryActivity -->
+    <string name="item_name_hint">item name</string>
+    <string name="item_description_hint">description</string>
+    <string name="item_quantity_hint">quantity</string>
 </resources>

@@ -6,9 +6,12 @@
                   android:paddingBottom="10dip"
                   android:paddingLeft="10dip"
                   android:paddingTop="10dip" >
-
-
-
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
 
         <TextView
             android:id="@+id/itemname"
