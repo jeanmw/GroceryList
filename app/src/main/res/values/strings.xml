@@ -1,10 +1,32 @@
 <resources>
-    <!-- Static app content goes here -->
     <string name="app_name">GroceryList</string>
     <string name="add_item">Add</string>
+    <string name="item_quantity">quantity: %s</string>
+    <string name="standard_dialog_error">Must enter valid item and quantity</string>
 
-    <!-- EditGroceryActivity -->
+    <!-- GroceryListActivity -->
+    <string name="intro_toast">Add item, check off existing item, or click existing item for more info</string>
+
+    <string name="add_item_dialog_title">Add Grocery</string>
+    <string name="add_item_dialog_positive">Add</string>
+    <string name="add_item_dialog_negative">Cancel</string>
+    <string name="add_item_toast_saved">%s saved</string>
+
+    <string name="item_detail_title">Item details</string>
+    <string name="item_detail_message">"Item: %1$s\ndescription: %2$s\nquantity: %3$s"</string>
+
+    <!-- EditGroceryListActivity -->
     <string name="item_name_hint">item name</string>
     <string name="item_description_hint">description</string>
     <string name="item_quantity_hint">quantity</string>
+
+    <string name="create_item_dialog_title">Add Grocery</string>
+    <string name="create_item_dialog_negative">Cancel</string>
+    <string name="create_item_dialog_positive">Add</string>
+    <string name="create_item_dialog_toast_saved">%s saved</string>
+
+    <string name="update_item_dialog_title">Edit %s</string>
+    <string name="update_item_dialog_negative">Delete</string>
+    <string name="update_item_dialog_positive">Save</string>
+    <string name="update_item_dialog_toast_saved">%s saved</string>
 </resources>

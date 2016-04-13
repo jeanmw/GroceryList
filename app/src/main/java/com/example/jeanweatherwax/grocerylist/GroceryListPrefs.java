@@ -2,7 +2,6 @@ package com.example.jeanweatherwax.grocerylist;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,7 +10,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
- * Created by jeanweatherwax on 4/10/16.
+ * We should ideally serialize/deserialized json on a background thread. For the
+ * purposes of a quick demo, I have skipped this as there is no notice-able
+ * UI stutter. Ideally, I would use a sqlite database with callbacks instead of
+ * SharedPrefs so I know when a write was successfully completed.
  */
 public class GroceryListPrefs {
   private static final String TAG = GroceryListPrefs.class.getSimpleName();
@@ -24,18 +26,18 @@ public class GroceryListPrefs {
     Gson gson = new Gson();
     String serializedGroceryList = gson.toJson(groceryItems);
     editor.putString(KEY_GROCERY_LIST, serializedGroceryList);
-    editor.commit();
+    editor.apply();
   }
 
   public static ArrayList<GroceryItem> getGroceryList(Context context) {
     SharedPreferences prefs = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
     String serializedGroceryList = prefs.getString(KEY_GROCERY_LIST, "");
-    if(serializedGroceryList.equals("")) {
-      Log.d(TAG, "getGroceryList: returning empty");
+    if (serializedGroceryList.equals("")) {
       return new ArrayList<>();
     }
     Gson gson = new Gson();
-    Type groceryListType = new TypeToken<ArrayList<GroceryItem>>() {}.getType();
+    Type groceryListType = new TypeToken<ArrayList<GroceryItem>>() {
+    }.getType();
     ArrayList<GroceryItem> groceryItems = gson.fromJson(serializedGroceryList, groceryListType);
     return groceryItems;
   }

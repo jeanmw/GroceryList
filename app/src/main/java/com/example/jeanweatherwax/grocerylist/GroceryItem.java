@@ -10,13 +10,12 @@ import android.os.Parcelable;
 /** This class is used to make a custom grocery name object */
 
 public class GroceryItem implements Parcelable {
-
   private String name;
   private String description;
   private Integer quantity;
   private Boolean checked;
 
-  public GroceryItem(String name, String description, Integer quantity, Boolean isChecked) {
+  public GroceryItem(String name, String description, Integer quantity, Boolean checked) {
     this.name = name;
     this.description = description;
     this.quantity = quantity;
@@ -35,7 +34,7 @@ public class GroceryItem implements Parcelable {
     return quantity;
   }
 
-  public Boolean getChecked() {
+  public Boolean isChecked() {
     return checked;
   }
 
@@ -47,7 +46,7 @@ public class GroceryItem implements Parcelable {
     this.quantity = quantity;
   }
 
-  public void setChecked(Boolean isChecked) {
+  public void setChecked(Boolean checked) {
     this.checked = checked;
   }
 
