@@ -17,26 +17,22 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="horizontal">
         <Button
             android:id="@+id/edit_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:text="Edit List"/>
+            android:text="@string/edit_list"/>
         <ImageButton
             android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="200dp"
-            android:background="@drawable/ic_menu_add"
-            android:scaleType="fitXY"/>
-    </LinearLayout>
+            android:layout_gravity="right"
+            android:background="@drawable/ic_add_circle_outline_black_48dp"/>
+    </FrameLayout>
 
 </LinearLayout>

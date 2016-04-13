@@ -74,19 +74,24 @@ public class EditGroceryListActivity extends AppCompatActivity {
           Toast.makeText(EditGroceryListActivity.this, R.string.standard_dialog_error, Toast.LENGTH_SHORT).show();
           dialogInterface.dismiss();
         } else {
-          Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
-          GroceryItem groceryItem = new GroceryItem(itemName, description, quantity, false);
-          String format = getString(R.string.create_item_dialog_toast_saved);
-          String toastMessage = String.format(format, groceryItem.getName());
-          Toast.makeText(EditGroceryListActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
-          groceries.add(groceryItem);
-          GroceryListPrefs.saveGroceryList(EditGroceryListActivity.this, groceries);
-          itemAdapter.notifyDataSetChanged();
+          addItemAndUpdateList(quantityEditText, itemName, description);
         }
       }
     });
     builder.setNegativeButton(R.string.create_item_dialog_negative, null);
     builder.create().show();
+  }
+
+  private void addItemAndUpdateList(EditText quantityEditText, String itemName, String description) {
+    Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
+    GroceryItem groceryItem = new GroceryItem(itemName, description, quantity, false);
+    String format = getString(R.string.create_item_dialog_toast_saved);
+    String toastMessage = String.format(format, groceryItem.getName());
+    Toast.makeText(EditGroceryListActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+    groceries.add(groceryItem);
+    GroceryListPrefs.saveGroceryList(EditGroceryListActivity.this, groceries);
+    itemAdapter.notifyDataSetChanged();
+    groceryListView.smoothScrollToPosition(itemAdapter.getCount());
   }
 
   private void setupGroceryListView() {

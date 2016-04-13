@@ -6,6 +6,7 @@
 
     <!-- GroceryListActivity -->
     <string name="intro_toast">Add item, check off existing item, or click existing item for more info</string>
+    <string name="edit_list">Edit List</string>
 
     <string name="add_item_dialog_title">Add Grocery</string>
     <string name="add_item_dialog_positive">Add</string>

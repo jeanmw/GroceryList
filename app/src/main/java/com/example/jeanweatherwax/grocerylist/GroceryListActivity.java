@@ -35,59 +35,65 @@ public class GroceryListActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_grocery_list);
     ButterKnife.bind(this);
+
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     groceries = GroceryListPrefs.getGroceryList(GroceryListActivity.this);
-
     itemAdapter = new GroceryListAdapter(GroceryListActivity.this, groceries);
     recyclerView.setAdapter(itemAdapter);
 
-    setupAddItemButton();
-
-    Toast.makeText(GroceryListActivity.this, R.string.intro_toast, Toast.LENGTH_SHORT).show();
-
-    setupEditListButton();
-  }
-
-  private void setupAddItemButton() {
     addItemButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(GroceryListActivity.this);
-        builder.setTitle(R.string.add_item_dialog_title);
-
-        View addItemView = LayoutInflater.from(GroceryListActivity.this)
-                .inflate(R.layout.dialog_add_item, null, false);
-        final EditText nameEditText = (EditText) addItemView.findViewById(R.id.name);
-        final EditText descriptionEditText = (EditText) addItemView.findViewById(R.id.description);
-        final EditText quantityEditText = (EditText) addItemView.findViewById(R.id.quantity);
-        builder.setView(addItemView);
-        builder.setPositiveButton(R.string.add_item_dialog_positive, new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialogInterface, int i) {
-            String itemName = nameEditText.getText().toString();
-            String description = descriptionEditText.getText().toString();
-            if ("".equals(itemName.trim()) || quantityEditText.length() == 0) {
-              Toast.makeText(GroceryListActivity.this, R.string.standard_dialog_error, Toast.LENGTH_SHORT).show();
-              dialogInterface.dismiss();
-            } else {
-              Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
-              GroceryItem groceryItem = new GroceryItem(itemName, description, quantity, false);
-              String format = getString(R.string.add_item_toast_saved);
-              String toastMessage = String.format(format, nameEditText.getText().toString());
-              Toast.makeText(GroceryListActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
-              groceries.add(groceryItem);
-              GroceryListPrefs.saveGroceryList(GroceryListActivity.this, groceries);
-              itemAdapter.notifyDataSetChanged();
-            }
-          }
-        });
-        builder.setNegativeButton(R.string.add_item_dialog_negative, null);
+        final AlertDialog.Builder builder = getAddItemBuilder();
         builder.create().show();
       }
     });
+
+    setupEditListButton();
+
+    Toast.makeText(GroceryListActivity.this, R.string.intro_toast, Toast.LENGTH_SHORT).show();
+  }
+
+  private AlertDialog.Builder getAddItemBuilder() {
+    final AlertDialog.Builder builder = new AlertDialog.Builder(GroceryListActivity.this);
+    builder.setTitle(R.string.add_item_dialog_title);
+
+    View addItemView = LayoutInflater.from(GroceryListActivity.this)
+            .inflate(R.layout.dialog_add_item, null, false);
+    final EditText nameEditText = (EditText) addItemView.findViewById(R.id.name);
+    final EditText descriptionEditText = (EditText) addItemView.findViewById(R.id.description);
+    final EditText quantityEditText = (EditText) addItemView.findViewById(R.id.quantity);
+    builder.setView(addItemView);
+    builder.setPositiveButton(R.string.add_item_dialog_positive, new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialogInterface, int i) {
+        String itemName = nameEditText.getText().toString();
+        String description = descriptionEditText.getText().toString();
+        if ("".equals(itemName.trim()) || quantityEditText.length() == 0) {
+          Toast.makeText(GroceryListActivity.this, R.string.standard_dialog_error, Toast.LENGTH_SHORT).show();
+          dialogInterface.dismiss();
+        } else {
+          addItemAndUpdateList(quantityEditText, itemName, description, nameEditText);
+        }
+      }
+    });
+    builder.setNegativeButton(R.string.add_item_dialog_negative, null);
+    return builder;
+  }
+
+  private void addItemAndUpdateList(EditText quantityEditText, String itemName, String description, EditText nameEditText) {
+    Integer quantity = Integer.valueOf(quantityEditText.getText().toString());
+    GroceryItem groceryItem = new GroceryItem(itemName, description, quantity, false);
+    String format = getString(R.string.add_item_toast_saved);
+    String toastMessage = String.format(format, nameEditText.getText().toString());
+    Toast.makeText(GroceryListActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+    groceries.add(groceryItem);
+    GroceryListPrefs.saveGroceryList(GroceryListActivity.this, groceries);
+    itemAdapter.notifyDataSetChanged();
+    recyclerView.smoothScrollToPosition(itemAdapter.getItemCount());
   }
 
   private void setupEditListButton() {

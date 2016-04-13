@@ -3,7 +3,6 @@ package com.example.jeanweatherwax.grocerylist;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ public class GroceryListAdapter extends RecyclerView.Adapter<GroceryListAdapter.
 
   @Override
   public GroceryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_grocery_list_item, parent, false);
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grocery_list_item, parent, false);
     GroceryViewHolder viewHolder = new GroceryViewHolder(view);
     return viewHolder;
   }

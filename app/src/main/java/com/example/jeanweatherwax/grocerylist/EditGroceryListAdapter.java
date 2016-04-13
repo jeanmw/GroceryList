@@ -39,7 +39,7 @@ public class EditGroceryListAdapter extends BaseAdapter {
     final ViewHolder holder;
     if (convertView == null) {
       holder = new ViewHolder();
-      convertView = layoutInflater.inflate(R.layout.grocery_list_item, null);
+      convertView = layoutInflater.inflate(R.layout.edit_grocery_list_item, null);
       holder.itemNameTextView = (TextView) convertView.findViewById(R.id.item_name);
       holder.quantityTextView = (TextView) convertView.findViewById(R.id.item_quantity);
       convertView.setTag(holder);
