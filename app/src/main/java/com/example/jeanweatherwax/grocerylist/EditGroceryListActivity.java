@@ -18,6 +18,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
+/**
+ * Edit Activity: update/add description and quantity of existing items, add items, delete items
+ */
+
 public class EditGroceryListActivity extends AppCompatActivity {
   private static final String TAG = GroceryListActivity.class.getSimpleName();
   public static final String KEY_PARCELABLE_GROCERIES = "key_parcelable_groceries";

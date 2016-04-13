@@ -7,7 +7,7 @@ package com.example.jeanweatherwax.grocerylist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/** This class is used to make a custom grocery name object */
+/** This class is used to make a custom grocery object */
 
 public class GroceryItem implements Parcelable {
   private String name;

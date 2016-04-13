@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Grocery List Activity: View items, check off items, add new items
+ */
+
 public class GroceryListActivity extends AppCompatActivity {
   private static final String TAG = GroceryListActivity.class.getSimpleName();
 
